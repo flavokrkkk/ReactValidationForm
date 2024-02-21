@@ -9,12 +9,17 @@ function App() {
     register,
     formState: {
       errors,
+      isValid
     },
-    handleSubmit
-  } = useForm()
+    handleSubmit,
+    reset,
+  } = useForm({
+      mode: 'onBlur'
+  })
 
   const onSubmit = (data) => {
     alert(JSON.stringify(data))
+    reset()
   }
 
   return (
@@ -23,12 +28,39 @@ function App() {
         <hr/>
         <form onSubmit={handleSubmit(onSubmit)}>
           <label>
-            First Name
+            First Name: 
             <input
-              {...register('firstName')}
+              {...register('firstName', {
+                required: "Поле обязательно для заполнения!",
+                minLength: {
+                  value: 5,
+                  message: 'Минимальная длина 5 символов',
+                }
+              })}
             />
           </label>
-          <input type='submit' />
+          <div style={{height: '40px'}}>
+              {errors?.firstName && <p>{errors?.firstName?.message || "Error"}</p>}
+          </div>
+
+          <label>
+            Last Name: 
+            <input
+              {...register('lastName', {
+                required: "Поле обязательно для заполнения!",
+                minLength: {
+                  value: 5,
+                  message: 'Минимальная длина 5 символов',
+                }
+              })}
+            />
+          </label>
+          <div style={{height: '40px'}}>
+              {errors?.lastName && <p>{errors?.lastName?.message || "Error"}</p>}
+          </div>
+
+
+          <input disabled={!isValid} type='submit'/>
         </form>
       </div>
   )
